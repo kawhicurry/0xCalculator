@@ -16,14 +16,14 @@ MainWindow::MainWindow(QWidget *parent)
 
   // init autoSave
   if (!iniAuto.isEmpty() && !iniAuto.toInt()) {
-    location::autoSave = 0;
+    Location::autoSave = 0;
     ui->actionAuto_Save->setText("Auto Save Off");
   }
 
   // init filePath
   QFile iniPathFile(iniPath);
   if (iniPathFile.open(QFile::WriteOnly)) {
-    location::filePath = iniPath;
+    Location::filePath = iniPath;
   }
 
   // init Qss file(theme)
@@ -42,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
   QSettings *IniWrite = new QSettings("config.ini", QSettings::IniFormat);
-  IniWrite->setValue("autoSave", location::autoSave);
-  IniWrite->setValue("filePath", location::filePath);
+  IniWrite->setValue("autoSave", Location::autoSave);
+  IniWrite->setValue("filePath", Location::filePath);
   IniWrite->setValue("globalQss", globalQss);
   delete IniWrite;
 
@@ -60,6 +60,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   }
   if (event->key() == Qt::Key_Up) {
     //读取历史文件
+    ui->pushButton_Up->click();
+  }
+  if (event->key() == Qt::Key_Down) {
+    ui->pushButton_Down->click();
   }
 }
 
@@ -111,20 +115,20 @@ void MainWindow::on_pushButton_divide_clicked() {
 }
 void MainWindow::on_pushButton_Up_clicked() {
   ui->textBrowser_input->setFocus();
-  if (location::isRead) {
-    --location::line;
+  if (Location::isRead) {
+    --Location::line;
   } else {
-    location::line = CountLines(location::filePath);
-    location::isRead = 1;
+    Location::line = CountLines(Location::filePath);
+    Location::isRead = 1;
   }
-  ui->textBrowser_output->setText(ReadLine(location::filePath, location::line));
+  ui->textBrowser_output->setText(ReadLine(Location::filePath, Location::line));
 }
 void MainWindow::on_pushButton_Down_clicked() {
   ui->textBrowser_input->setFocus();
-  if (location::isRead) {
-    ++location::line;
+  if (Location::isRead) {
+    ++Location::line;
   }
-  ui->textBrowser_output->setText(ReadLine(location::filePath, location::line));
+  ui->textBrowser_output->setText(ReadLine(Location::filePath, Location::line));
 }
 void MainWindow::on_pushButton_DEL_clicked() {
   ui->textBrowser_input->setFocus();
@@ -139,13 +143,13 @@ void MainWindow::on_pushButton_CE_clicked() {
 void MainWindow::on_pushButton_equal_clicked() {
   ui->textBrowser_input->setFocus();
 
-  location::isRead = 0;
+  Location::isRead = 0;
 
   QString s = ui->textBrowser_input->toPlainText();
   QString rst = parser(s);
   ui->textBrowser_output->setPlainText(rst);
-  if (location::autoSave) {
-    save(location::filePath, s, rst);
+  if (Location::autoSave) {
+    save(Location::filePath, s, rst);
   }
 }
 
@@ -165,26 +169,26 @@ void MainWindow::on_actionAuthor_triggered() {
 }
 
 void MainWindow::on_actionSave_triggered() {
-  save(location::filePath, ui->textBrowser_input->toPlainText(),
+  save(Location::filePath, ui->textBrowser_input->toPlainText(),
        ui->textBrowser_output->toPlainText());
 }
 
 void MainWindow::on_actionRead_triggered() {
-  QFile file(location::filePath);
+  QFile file(Location::filePath);
   if (!file.exists()) {
     return;
   }
-  QDesktopServices::openUrl(QUrl(location::filePath));
+  QDesktopServices::openUrl(QUrl(Location::filePath));
 }
 
 void MainWindow::on_actionHistory_location_triggered() {
-  location *new_win = new location();
+  Location *new_win = new Location();
   new_win->show();
 }
 
 void MainWindow::on_actionAuto_Save_triggered() {
-  location::autoSave = !location::autoSave;
-  if (location::autoSave) {
+  Location::autoSave = !Location::autoSave;
+  if (Location::autoSave) {
     ui->actionAuto_Save->setText("Auto Save On");
   } else {
     ui->actionAuto_Save->setText("Auto Save Off");

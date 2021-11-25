@@ -35,63 +35,53 @@ class MainWindow : public QMainWindow {
 
   void keyPressEvent(QKeyEvent *event);
 
-#define declare_clicked_func(name) void on_pushButton_##name##_clicked();
-
-  declare_clicked_func(0);
-  declare_clicked_func(1);
-  declare_clicked_func(2);
-  declare_clicked_func(3);
-  declare_clicked_func(4);
-  declare_clicked_func(5);
-  declare_clicked_func(6);
-  declare_clicked_func(7);
-  declare_clicked_func(8);
-  declare_clicked_func(9);
-  declare_clicked_func(A);
-  declare_clicked_func(B);
-  declare_clicked_func(C);
-  declare_clicked_func(D);
-  declare_clicked_func(E);
-  declare_clicked_func(F);
-  declare_clicked_func(left_bracket);
-  declare_clicked_func(right_bracket);
-  declare_clicked_func(add);
-  declare_clicked_func(subtract);
-  declare_clicked_func(multiply);
-  declare_clicked_func(divide);
-  declare_clicked_func(Up);
-  declare_clicked_func(Down);
-  declare_clicked_func(DEL);
-  declare_clicked_func(CE);
-  declare_clicked_func(equal);
-  declare_clicked_func(left);
-  declare_clicked_func(right);
-
-  void on_actionAuthor_triggered();
-
-  void on_actionSave_triggered();
-
-  void on_actionRead_triggered();
-
-  void on_actionHistory_location_triggered();
-
-  void on_actionAuto_Save_triggered();
-
-  void on_actionLarge_font_size_triggered();
-
-  void on_actionHelp_triggered();
-
   void changeStyle(QString newStyle, QWidget *widget);
 
-  void on_actionNormal_font_size_triggered();
+#define clicked_func(name) void on_pushButton_##name##_clicked();
 
-  void on_actionSmall_font_size_triggered();
+  clicked_func(0);
+  clicked_func(1);
+  clicked_func(2);
+  clicked_func(3);
+  clicked_func(4);
+  clicked_func(5);
+  clicked_func(6);
+  clicked_func(7);
+  clicked_func(8);
+  clicked_func(9);
+  clicked_func(A);
+  clicked_func(B);
+  clicked_func(C);
+  clicked_func(D);
+  clicked_func(E);
+  clicked_func(F);
+  clicked_func(left_bracket);
+  clicked_func(right_bracket);
+  clicked_func(add);
+  clicked_func(subtract);
+  clicked_func(multiply);
+  clicked_func(divide);
+  clicked_func(Up);
+  clicked_func(Down);
+  clicked_func(DEL);
+  clicked_func(CE);
+  clicked_func(equal);
+  clicked_func(left);
+  clicked_func(right);
 
-  void on_actionBox_font_size_triggered();
+#define triggered_func(name) void on_action##name##_triggered();
 
-  void on_actionBlack_theme_triggered();
-
-  void on_actionWhite_theme_triggered();
+  triggered_func(Author);
+  triggered_func(Save) triggered_func(Read);
+  triggered_func(History_location);
+  triggered_func(Auto_Save);
+  triggered_func(Large_font_size);
+  triggered_func(Help);
+  triggered_func(Normal_font_size);
+  triggered_func(Small_font_size);
+  triggered_func(Box_font_size);
+  triggered_func(Black_theme);
+  triggered_func(White_theme);
 
  private:
   Ui::MainWindow *ui;

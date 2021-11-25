@@ -11,12 +11,12 @@ namespace Ui {
 class location;
 }
 
-class location : public QDialog {
+class Location : public QDialog {
   Q_OBJECT
 
  public:
-  explicit location(QWidget *parent = nullptr);
-  ~location();
+  explicit Location(QWidget *parent = nullptr);
+  ~Location();
 
   static QString filePath;
   static int line;
