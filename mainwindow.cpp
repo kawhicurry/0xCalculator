@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
   // init autoSave
   if (!iniAuto.isEmpty() && !iniAuto.toInt()) {
     location::autoSave = 0;
+    ui->actionAuto_Save->setText("Auto Save Off");
   }
 
   // init filePath
@@ -32,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     qssContent = iniQssFile.readAll();
     globalQss = iniQss;
   } else {
-    QFile defaultQss(globalQss);
+    QFile defaultQss(":/Black.qss");
     defaultQss.open(QFile::ReadOnly);
     qssContent = defaultQss.readAll();
   }
@@ -52,13 +53,15 @@ MainWindow::~MainWindow() {
 QString MainWindow::globalQss = ":/Black.qss";
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return ||
-        event->key() == Qt::Key_Equal) {
-        //小键盘回车与主键盘回车
-        ui->pushButton_equal->click();
-    }
+  if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return ||
+      event->key() == Qt::Key_Equal) {
+    //小键盘回车与主键盘回车
+    ui->pushButton_equal->click();
+  }
+  if (event->key() == Qt::Key_Up) {
+    //读取历史文件
+  }
 }
-
 
 #define set_insert_func(name)                         \
   void MainWindow::on_pushButton_##name##_clicked() { \
@@ -106,13 +109,22 @@ void MainWindow::on_pushButton_divide_clicked() {
   ui->textBrowser_input->setFocus();
   ui->textBrowser_input->insertPlainText("/");
 }
-void MainWindow::on_pushButton_mod_clicked() {
+void MainWindow::on_pushButton_Up_clicked() {
   ui->textBrowser_input->setFocus();
-  ui->textBrowser_input->insertPlainText("%");
+  if (location::isRead) {
+    --location::line;
+  } else {
+    location::line = CountLines(location::filePath);
+    location::isRead = 1;
+  }
+  ui->textBrowser_output->setText(ReadLine(location::filePath, location::line));
 }
-void MainWindow::on_pushButton_power_clicked() {
+void MainWindow::on_pushButton_Down_clicked() {
   ui->textBrowser_input->setFocus();
-  ui->textBrowser_input->insertPlainText("^");
+  if (location::isRead) {
+    ++location::line;
+  }
+  ui->textBrowser_output->setText(ReadLine(location::filePath, location::line));
 }
 void MainWindow::on_pushButton_DEL_clicked() {
   ui->textBrowser_input->setFocus();
@@ -126,6 +138,9 @@ void MainWindow::on_pushButton_CE_clicked() {
 
 void MainWindow::on_pushButton_equal_clicked() {
   ui->textBrowser_input->setFocus();
+
+  location::isRead = 0;
+
   QString s = ui->textBrowser_input->toPlainText();
   QString rst = parser(s);
   ui->textBrowser_output->setPlainText(rst);
@@ -176,25 +191,52 @@ void MainWindow::on_actionAuto_Save_triggered() {
   }
 }
 
-void MainWindow::on_actionLarge_font_size_triggered() {
-  QString old_style = MainWindow::centralWidget()->styleSheet();
-  old_style += "*{font:30px;}";
-  MainWindow::centralWidget()->setStyleSheet(old_style);
-}
-
 void MainWindow::on_actionHelp_triggered() {
   Help *new_help = new Help();
   new_help->show();
 }
 
-void MainWindow::on_actionNormal_font_size_triggered() {
-  QString old_style = MainWindow::centralWidget()->styleSheet();
-  old_style += "*{font:20px;}";
-  MainWindow::centralWidget()->setStyleSheet(old_style);
+// Style
+void MainWindow::changeStyle(QString newStyle, QWidget *widget) {
+  QString oldStyle = widget->styleSheet();
+  oldStyle += newStyle;
+  widget->setStyleSheet(oldStyle);
 }
 
+void MainWindow::on_actionLarge_font_size_triggered() {
+  changeStyle("*{font:30px;}", MainWindow::centralWidget());
+}
+void MainWindow::on_actionNormal_font_size_triggered() {
+  changeStyle("*{font:20px;}", MainWindow::centralWidget());
+}
 void MainWindow::on_actionSmall_font_size_triggered() {
-  QString old_style = MainWindow::centralWidget()->styleSheet();
-  old_style += "*{font:10px;}";
-  MainWindow::centralWidget()->setStyleSheet(old_style);
+  changeStyle("*{font:10px;}", MainWindow::centralWidget());
+}
+
+void MainWindow::on_actionBox_font_size_triggered() {
+  bool ok;
+  QFont font = QFontDialog::getFont(&ok, ui->textBrowser_input->font(), this,
+                                    "自定义输入输出框文字");
+  if (ok) {
+    ui->textBrowser_input->setStyleSheet(
+        "*{font:" + (QString::number(font.pointSize(), 10) + "px ;}"));
+    ui->textBrowser_output->setStyleSheet(
+        "*{font:" + (QString::number(font.pointSize(), 10) + "px ;}"));
+  }
+}
+
+void MainWindow::on_actionBlack_theme_triggered() {
+  globalQss = ":/Black.qss";
+  QFile defaultQss(globalQss);
+  defaultQss.open(QFile::ReadOnly);
+  QString qssContent = defaultQss.readAll();
+  centralWidget()->setStyleSheet(qssContent);
+}
+
+void MainWindow::on_actionWhite_theme_triggered() {
+  globalQss = ":/White.qss";
+  QFile defaultQss(globalQss);
+  defaultQss.open(QFile::ReadOnly);
+  QString qssContent = defaultQss.readAll();
+  centralWidget()->setStyleSheet(qssContent);
 }

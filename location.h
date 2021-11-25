@@ -19,6 +19,8 @@ class location : public QDialog {
   ~location();
 
   static QString filePath;
+  static int line;
+  static bool isRead;
   static bool autoSave;
 
  private slots:

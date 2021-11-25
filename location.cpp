@@ -9,6 +9,8 @@ location::location(QWidget *parent) : QDialog(parent), ui(new Ui::location) {
 }
 
 QString location::filePath = "hello.txt";
+int location::line=0;
+bool location::isRead=0;
 bool location::autoSave = 1;
 
 location::~location() { delete ui; }

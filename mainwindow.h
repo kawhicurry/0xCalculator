@@ -2,11 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QDesktopServices>
+#include <QFontDialog>
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QSettings>
 
 #include "author.h"
+#include "boxfont.h"
 #include "help.h"
 #include "location.h"
 #include "parser.h"
@@ -26,6 +28,8 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
   static QString globalQss;
+
+  void setTextFontSize(int FontSize);
 
  private slots:
 
@@ -55,8 +59,8 @@ class MainWindow : public QMainWindow {
   declare_clicked_func(subtract);
   declare_clicked_func(multiply);
   declare_clicked_func(divide);
-  declare_clicked_func(mod);
-  declare_clicked_func(power);
+  declare_clicked_func(Up);
+  declare_clicked_func(Down);
   declare_clicked_func(DEL);
   declare_clicked_func(CE);
   declare_clicked_func(equal);
@@ -77,9 +81,17 @@ class MainWindow : public QMainWindow {
 
   void on_actionHelp_triggered();
 
+  void changeStyle(QString newStyle, QWidget *widget);
+
   void on_actionNormal_font_size_triggered();
 
   void on_actionSmall_font_size_triggered();
+
+  void on_actionBox_font_size_triggered();
+
+  void on_actionBlack_theme_triggered();
+
+  void on_actionWhite_theme_triggered();
 
  private:
   Ui::MainWindow *ui;
